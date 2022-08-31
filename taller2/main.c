@@ -24,22 +24,32 @@ int main()
         .califications = {9,7,8},
         .concept = 1,
     };
+    printf("Funciona\n");
 
     student_t *st1p = &stud1;
     studentp_t *st2p = &stud2;
 
     // Completar: pushear en la pila ambos estudiantes
-
+    stack->push(stack, st1p);
+    stack->push(stack, st2p);
 
     // Una "lista" de profesores:
     teacher_t *teachers = malloc(3*sizeof(teacher_t));
     
     // Completar: pushear la lista de profesores a la pila
+    stack->push(stack, teachers);
 
     teachers[0].name = "Alejandro Furfaro";
     printf("Nombre del profesor: %s\n", ((teacher_t *) stack->top(stack))[0].name);
 
     //Completar: Imprimir estudiantes 1 y 2 desde la pila
+    stack->pop(stack);
+    free(teachers);
 
+    printStudentp((studentp_t*)stack->top(stack));
+    stack->pop(stack);
+    printStudent((student_t*)stack->top(stack));
+    stack->pop(stack);
+    deleteStack(stack);
     return 0;
 }
