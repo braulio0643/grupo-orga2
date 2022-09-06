@@ -60,24 +60,42 @@ alternate_sum_4_using_c:
 ; registros: x1[?], x2[?], x3[?], x4[?]
 
 alternate_sum_4_simplified:
+    SUB rdi, rsi
+    ADD rdi, rdx
+    SUB rdi, rcx
+    MOV rax, rdi
 	ret
 
 
 ; uint32_t alternate_sum_8(uint32_t x1, uint32_t x2, uint32_t x3, uint32_t x4, uint32_t x5, uint32_t x6, uint32_t x7, uint32_t x8);	
-; registros y pila: x1[?], x2[?], x3[?], x4[?], x5[?], x6[?], x7[?], x8[?]
+; registros y pila: x1[rdi], x2[rsi], x3[rdx], x4[rcx], x5[r8], x6[r9], x7[rbp
+; +0x10], x8[rbp + 0x18]
 alternate_sum_8:
 	;prologo
-
+  push rbp 
+  mov rbp , rsp
 	; COMPLETAR 
+  sub rdi, rsi
+  add rdi, rdx
+  sub rdi, rcx
+  add rdi, r8
+  sub rdi, r9
+  add rdi, [rbp + 0x10]
+  sub rdi, [rbp + 0x18]
+  mov rax, rdi
 
 	;epilogo
-
+	pop rbp
 	ret
 	
 
 ; SUGERENCIA: investigar uso de instrucciones para convertir enteros a floats y viceversa
 ;void product_2_f(uint32_t * destination, uint32_t x1, float f1);
-;registros: destination[?], x1[?], f1[?]
+;registros: destination[rdi], x1[rsi], f1[xmm0]
 product_2_f:
-	ret
+  cvtsi2ss xmm1, esi
+  mulss xmm0, xmm1
+  cvtss2si esi, xmm0
+  mov dword [rdi], esi
 
+	ret
