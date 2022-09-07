@@ -15,6 +15,6 @@ int main() {
   assert(alternate_sum_8(8, 2, 5, 1, 8, 9, 8, 1) == 16);
   uint32_t res = 0;
   product_2_f(&res, 10, 5.5);
-  printf("%d", res);
+  printf("%d\n", res);
   return 0;
 }

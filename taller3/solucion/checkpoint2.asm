@@ -93,9 +93,14 @@ alternate_sum_8:
 ;void product_2_f(uint32_t * destination, uint32_t x1, float f1);
 ;registros: destination[rdi], x1[rsi], f1[xmm0]
 product_2_f:
-  cvtsi2ss xmm1, esi
-  mulss xmm0, xmm1
-  cvtss2si esi, xmm0
-  mov dword [rdi], esi
+  push rbp
+  mov rbp, rsp
 
+  cvtsi2ss xmm1, esi
+  mulss xmm0,xmm1
+  cvtss2si esi, xmm0
+  mov   dword [rdi],esi
+  
+  pop rbp
 	ret
+
