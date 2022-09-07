@@ -12,20 +12,22 @@ global product_9_f
 
 ;########### DEFINICION DE FUNCIONES
 ;extern uint32_t complex_sum_z(complex_item *arr, uint32_t arr_length);
-;registros: arr[?], arr_length[?]
+;registros: arr[edi], arr_length[esi]
 complex_sum_z:
 	;prologo
-
-
-
+    push rbp
+    mov rbp, rsp
+    mov rcx, rsi 
+    mov rax, 0x0
 .cycle:			; etiqueta a donde retorna el ciclo que itera sobre arr
-
-
+    add rax, [rdi + 8*3]
+	add rdi, 8*4
+	
 	loop .cycle		; decrementa ecx y si es distinto de 0 salta a .cycle
 
 	
 	;epilogo
-
+    pop rbp
 	ret
 	
 ;extern uint32_t packed_complex_sum_z(packed_complex_item *arr, uint32_t arr_length);
