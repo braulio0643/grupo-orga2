@@ -16,6 +16,34 @@ global strLen
 
 ; int32_t strCmp(char* a, char* b)
 strCmp:
+push rbp
+mov rbp, rsp
+
+loopstart:
+;cmps [rdi], 0
+;JE menor
+;cmps [rsi], 0
+;JE mayor
+
+cmpsb [rdi], [rsi]
+JE incr
+JG mayor
+JL menor
+
+incr:
+inc rdi
+inc rsi
+jmp loopstart
+
+menor:
+mov ecx, 1
+jmp fin
+
+mayor:
+mov ecx, -1
+jmp fin
+
+fin:
 ret
 
 ; char* strClone(char* a)
