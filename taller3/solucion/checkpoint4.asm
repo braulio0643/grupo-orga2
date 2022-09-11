@@ -24,7 +24,6 @@ loopstart:
 ;JE menor
 ;cmps [rsi], 0
 ;JE mayor
-
 cmpsb [rdi], [rsi]
 JE incr
 JG mayor
@@ -44,10 +43,15 @@ mov ecx, -1
 jmp fin
 
 fin:
+pop rbp
 ret
 
 ; char* strClone(char* a)
 strClone:
+push rbp
+mov rbp,rsp
+
+pop rbp
 ret
 
 ; void strDelete(char* a)
@@ -60,6 +64,13 @@ ret
 
 ; uint32_t strLen(char* a)
 strLen:
+mov eax, 0
+checkEnd: 
+cmp byte [rdi], 0
+je endLen
+inc eax
+inc rdi
+jmp checkEnd
+endLen:
 ret
-
 

@@ -32,6 +32,9 @@ int main() {
   float f8 = 8.5;
   float f9 = 9.5;
   double destination = 0;
-  product_9_f(&destination, x1, f1, x2, f2, x3, f3, x4, f4, x5, f5, x6, f6, x7, f7, x8, f8, x9, f9);
+  product_9_f(&destination, x1, f1, x2, f2, x3, f3, x4, f4, x5, f5, x6, f6, x7,
+              f7, x8, f8, x9, f9);
   printf("%f\n", destination);
+  char *a = "Hola";
+  printf("%d\n", strLen(a));
 }
