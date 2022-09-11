@@ -64,6 +64,14 @@ ret
 
 ; uint32_t strLen(char* a)
 strLen:
+mov eax, 0
+checkEnd: 
+cmp byte [rdi], 0
+je endLen
+inc eax
+inc rdi
+jmp checkEnd
+endLen:
 ret
 
 
