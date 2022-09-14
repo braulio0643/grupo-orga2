@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include "checkpoints.h"
 
@@ -37,4 +38,7 @@ int main() {
   printf("%f\n", destination);
   char *a = "Hola";
   printf("%d\n", strLen(a));
+  char *b = strClone(a);
+  printf("%s\n", b);
+  strDelete(b);
 }

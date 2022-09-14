@@ -20,10 +20,10 @@ push rbp
 mov rbp, rsp
 
 loopstart:
-;cmps [rdi], 0
-;JE menor
-;cmps [rsi], 0
-;JE mayor
+cmps [rdi], 0
+JE menor
+cmps [rsi], 0
+JE mayor
 cmpsb [rdi], [rsi]
 JE incr
 JG mayor
@@ -48,18 +48,52 @@ ret
 
 ; char* strClone(char* a)
 strClone:
-push rbp
+;epilogo
+push rbp ;alineada
 mov rbp,rsp
+push rbp ; desalineada
+push rbx ; alineada
 
+;desarrollo
+mov rbp,rdi ; origen
+xor rbx,rbx ; longitud
+call strLen ; conseguimos la longitud del string
+inc eax ; sumamos 1 a la longitud del string para el caracter null
+mov ebx,eax; nos guardamos la longitud
+mov rdi,rbx ; guardamos el la long en edx para llamar el malloc
+call malloc WRT ..plt  ; rax tiene la direccion de memoria para el nuevo array
+mov r9, rax ; direccion a escribir
+mov rcx, rbx
+.copiarLoop:
+  mov bl, [rbp]
+  mov [r9], bl
+  inc rbp
+  inc r9
+loop .copiarLoop
+pop rbx
+pop rcx
 pop rbp
 ret
 
 ; void strDelete(char* a)
 strDelete:
+push rbp
+mov rbp, rsp
+call free WRT ..plt
+pop rbp
 ret
 
 ; void strPrint(char* a, FILE* pFile)
 strPrint:
+push rbp
+mov rbp, rsp
+
+mov rax, rdi
+mov rdi, rsi
+mov rsi, rax
+call fprintf WRT ..plt
+
+pop rbp
 ret
 
 ; uint32_t strLen(char* a)
