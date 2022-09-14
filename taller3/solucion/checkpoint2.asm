@@ -98,7 +98,7 @@ product_2_f:
 
   cvtsi2ss xmm1, esi
   mulss xmm0,xmm1
-  cvtss2si esi, xmm0
+  cvttss2si esi, xmm0
   mov   dword [rdi],esi
   
   pop rbp

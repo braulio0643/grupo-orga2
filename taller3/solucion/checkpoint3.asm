@@ -67,7 +67,7 @@ product_9_f:
 	
 	;convertimos los flotantes de cada registro xmm en doubles
 	;habria que usar CVTSS2SD (de single precision floating point a double precision floating point)
-    cvtss2sd xmm0, xmm0
+  cvtss2sd xmm0, xmm0
 	cvtss2sd xmm1, xmm1
 	cvtss2sd xmm2, xmm2
 	cvtss2sd xmm3, xmm3
@@ -79,7 +79,7 @@ product_9_f:
     ;multiplicamos los doubles en xmm0 <- xmm0 * xmm1, xmmo * xmm2 , ...
 	;dejo x9 para el final ya que quedó en el stack y me quedé sin registros de flotantes
     ;uso MULSD (multiply scalar double precision floating point value)
-    mulsd xmm0, xmm1
+  mulsd xmm0, xmm1
 	mulsd xmm0, xmm2
 	mulsd xmm0, xmm3
 	mulsd xmm0, xmm4
