@@ -3,7 +3,7 @@ extern free
 extern fprintf
 
 section .data
-
+nullStr db 'NULL'
 section .text
 
 global strCmp
@@ -91,7 +91,10 @@ ret
 strPrint:
 push rbp
 mov rbp, rsp
-
+cmp byte [rdi], 0
+jnz .llamar_fprintf
+mov rdi, nullStr
+.llamar_fprintf:
 mov rax, rdi
 mov rdi, rsi
 mov rsi, rax
