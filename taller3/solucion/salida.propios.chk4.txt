@@ -3,7 +3,7 @@
 Clonar
 
 7 - Omega 4
-0 - 
+0 - NULL
 
 Comparar
 
