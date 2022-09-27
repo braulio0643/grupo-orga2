@@ -20,7 +20,7 @@ complex_sum_z:
     mov rcx, rsi 
     mov rax, 0x0
 .cycle:			; etiqueta a donde retorna el ciclo que itera sobre arr
-    add rax, [rdi + 8*3]
+    add eax, dword [rdi + 8*3]
 	add rdi, 8*4
 	
 	loop .cycle		; decrementa ecx y si es distinto de 0 salta a .cycle
@@ -39,7 +39,7 @@ packed_complex_sum_z:
     mov rcx, rsi 
     mov rax, 0x0
 .cycle:			; etiqueta a donde retorna el ciclo que itera sobre arr
-    add rax, [rdi + 20]
+    add eax , dword [rdi + 20]
 	add rdi, 24
 	
 	loop .cycle		; decrementa ecx y si es distinto de 0 salta a .cycle
@@ -89,19 +89,19 @@ product_9_f:
 
     
 	;ahora convierto x9 y lo multiplico (dudosisimo)
-	cvtss2sd xmm7, [rbp + 0x30]
+	cvtss2sd xmm7, dword [rbp + 0x30]
 	mulsd xmm0, xmm7
 
 	; convertimos los enteros en doubles y los multiplicamos por xmm0. 
 	; habria que usar CVTSI2SD (dw integer to scalar double precision floating point value)
 
-	cvtsi2sd xmm1, rsi
-	cvtsi2sd xmm2, rcx
-	cvtsi2sd xmm3, rdx
-	cvtsi2sd xmm4, r8
-	cvtsi2sd xmm5, r9
-	cvtsi2sd xmm6, [rbp + 0x10]
-	cvtsi2sd xmm7, [rbp + 0x18]
+	cvtsi2sd xmm1, esi
+	cvtsi2sd xmm2, ecx
+	cvtsi2sd xmm3, edx
+	cvtsi2sd xmm4, r8d
+	cvtsi2sd xmm5, r9d
+	cvtsi2sd xmm6, dword [rbp + 0x10]
+	cvtsi2sd xmm7, dword [rbp + 0x18]
 
 	mulsd xmm0, xmm1
 	mulsd xmm0, xmm2
@@ -111,13 +111,12 @@ product_9_f:
 	mulsd xmm0, xmm6
 	mulsd xmm0, xmm7
 	
-	cvtsi2sd xmm1, [rbp + 0x20]
-	cvtsi2sd xmm2, [rbp + 0x28]
+	cvtsi2sd xmm1, dword [rbp + 0x20]
+	cvtsi2sd xmm2, dword [rbp + 0x28]
 	
 	mulsd xmm0, xmm1
 	mulsd xmm0, xmm2
 
-	movdq2q mm0, xmm0
 	movq [rdi], xmm0
 
     

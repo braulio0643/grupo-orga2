@@ -19,31 +19,31 @@ strCmp:
 push rbp
 mov rbp, rsp
 
-loopstart:
+.loopstart:
 mov al, [rdi]
 mov ah, [rsi]
 cmp al, ah
-JE incr
-JG mayor
-JL menor
+JE .incr
+JG .mayor
+JL .menor
 
-incr:
+.incr:
 cmp rdi, rsp  ;para resetear el flag Z
 cmp byte [rdi], 0 
-JE iguales
+JE .iguales
 inc rdi
 inc rsi
-jmp loopstart
+jmp .loopstart
 
-menor:
+.menor:
 mov rax, 1
 jmp fin
 
-mayor:
+.mayor:
 mov rax, -1
 jmp fin
 
-iguales:
+.iguales:
 mov rax, 0    ;para el caso en el que son los 2 caracteres iguales, pero además son el último caracter
 
 fin:
