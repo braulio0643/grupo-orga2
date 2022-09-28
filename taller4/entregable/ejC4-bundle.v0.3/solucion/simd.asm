@@ -1,22 +1,24 @@
 global fir_filter_simd
 extern fir_filter
 %define COEFS_OFFSET 0
-%define LENGTH_OFFSET 4
-%define BUFFER_OFFSET 8
-%define FIR_T_SIZE 12
+%define LENGTH_OFFSET 8
+%define BUFFER_OFFSET 12
+%define FIR_T_SIZE 16
 ; size_t fir_filter_simd(FIR_t*filtro[rdi], int16_t *in[rsi], unsigned length[edx], int16_t *out[rcx]);
 fir_filter_simd:
 
 ;epilogo
 push rbp
 mov rbp, rsp
+push r12
+push r13
 mov r11, rcx
 
 xor rcx, rcx
 mov ecx, edx
 shl rcx,1
 shr rcx,6
-push rsi
+
 ;filtro->buffer[filtro->length - 1]..
 mov r8, rdi
 add r8, BUFFER_OFFSET
@@ -28,7 +30,6 @@ memcpytrucho:
     add rsi, 8
     add r8,8
 loop memcpytrucho
-pop rsi
 xor r10,r10
 .loopexterno:
     ;rdi: estructura. rdx: longitud del audio. r8: puntero a coeficiente. r9: (in_p) posicion a leer del buffer
@@ -47,25 +48,25 @@ xor r10,r10
             pmaddwd xmm1, [r8] ; multiplicamos los coefs con el buffer
             paddd xmm0,xmm1
             sub rcx, 16
-            add r9, 16
+            sub r9, 16
             add r8, 16
             cmp rcx, 0
         jg .innerloop
     phaddd xmm0, xmm0
     phaddd xmm0, xmm0
-    cmp qword xmm0, 0x3fffffff
+    movq r12, xmm0  
+    cmp r12, 0x3fffffff
     jle .no_saturar_mayor
-    mov xmm0,0x3fffffff
+    mov r12 ,0x3fffffff
     .no_saturar_mayor:
-    cmp qword xmm0, -0x40000000
+    cmp qword r12, -0x40000000
     jge .fin
-    mov xmm0,-0x40000000
+    mov r12,-0x40000000
     .fin:
-    psrad xmm0, 15
-    mov 
+    shr r12, 15
     mov rax, r11
     add rax, r10
-    mov qword  [r11], xmm0
+    mov  [r11], r12
     inc r10
     cmp r10,rdx
     jl .loopexterno
@@ -85,7 +86,11 @@ memmovetrucho:
 mov rax, rdx
 ;prologo
 
+
+pop r13
+pop r12
 pop rbp
+
 ret
     
     
