@@ -45,32 +45,32 @@ xor r10,r10
     mov r9, [rdi+LENGTH_OFFSET]    ; long
     mov r11, r9 ; long
     add r9, r10 ; length + n
-    sub r9, 16 ; length + n - 1 
-    sal r9, 1 ; offset del item [length + n - 1]
+    sub r9, 8 ; length + n - 8 para cargar en el buffer 
+    sal r9, 1 ; offset del item [length + n - 8]
     add r9, rdi
     add r9,BUFFER_OFFSET ; filtro->buffer[filtro->length - 1 + n]
         .innerloop:
             ;acc += (int32_t)(*coeff_p++) * (int32_t)(*(in_p--))
-            movups xmm1, [r9] ; cargo 16 bytes buffer en xmm1
+            movdqu xmm1, [r9] ; cargo 16 bytes buffer en xmm1
             pmaddwd xmm1, [r8] ; multiplicamos los coefs con el buffer
             paddd xmm0,xmm1
             sub r11, 8
-            sub r9, 16
+            add r9, 16
             add r8, 16
             cmp r11, 0
         jg .innerloop
     phaddd xmm0, xmm0
     phaddd xmm0, xmm0
-    movq rsi, xmm0 
-    cmp rsi, 0x3fffffff
+    movd esi, xmm0 
+    cmp esi, 0x3fffffff
     jle .no_saturar_mayor
-    mov rsi ,0x3fffffff
+    mov esi ,0x3fffffff
     .no_saturar_mayor:
-    cmp rsi, -0x40000000
+    cmp esi, -0x40000000
     jge .fin
-    mov rsi, -0x40000000
+    mov esi, -0x40000000
     .fin:
-    sar rsi, 15
+    sar esi, 15
     mov word [rcx], si
     inc rcx
     inc rcx
