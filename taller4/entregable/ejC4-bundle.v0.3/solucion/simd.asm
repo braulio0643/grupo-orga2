@@ -59,21 +59,28 @@ xor r10,r10
     sal r9, 1 ; offset del item [length + n - 8]
     add r9, rdi
     add r9, BUFFER_OFFSET ; filtro->buffer[filtro->length - 1 + n]
+    ;en C
+    ;1. in_p = 0x7fffffe76bda. despues de terminar= 0x7fffffe76b2a
+    ;2. in_p = 0x7fffffe76bdc
+    
+    ;en ASM
+    ;1. in_p = 0x7fffffe76bcc
+    ;2. in_p = 0x7fffffe76bd0
+
+    ;r -s -f highpass -o outputs/asaddad_simd.wav wavs/muestra.wav
         .innerloop:
             ;acc += (int32_t)(*coeff_p++) * (int32_t)(*(in_p--))
             movdqu xmm1, [r9] ; cargo 16 bytes buffer en xmm1
-
             movdqu xmm2, [mask1]
             movdqu xmm3, [mask2]
             movlhps xmm3, xmm2
             ;tengo la mascara en xmm3
             pshufb xmm1, xmm3
-            ;{[0x0] = 0x6, [0x1] = 0x8, [0x2] = 0x9, [0x3] = 0x2, [0x4] = 0x8, [0x5] = 0xffff, [0x6] = 0x7, [0x7] = 0x1}
-            ;{[0x0] = 0x1, [0x1] = 0x7, [0x2] = 0xffff, [0x3] = 0x8, [0x4] = 0x2, [0x5] = 0x9, [0x6] = 0x8, [0x7] = 0x6},
+          
             pmaddwd xmm1, [r8] ; multiplicamos los coefs con el buffer
             paddd xmm0,xmm1
             sub r11, 8
-            add r9, 16
+            sub r9, 16
             add r8, 16
             cmp r11, 0
         jg .innerloop
@@ -103,8 +110,8 @@ xor r10,r10
 mov r8, rdi                     ; *filtro
 add r8, BUFFER_OFFSET           ; *filtro->buffer
 xor r9,r9
-add r9d, edx                    ; length
-sal r9d, 1                      ; length offset
+mov r9, rdx                    ; length
+sal r9, 1                      ; length offset
 add r9, r8                      ; *filtro->buffer[length]
 mov r10, [rdi + LENGTH_OFFSET]  ; filtro.length
 dec r10                         ; filtro.length - 1
