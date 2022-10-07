@@ -22,6 +22,8 @@ fir_filter_simd:
 ;epilogo
 push rbp;alienada
 mov rbp, rsp
+push r12
+push rcx
 
 push rdi ;desalineada
 push rsi ;alineada
@@ -128,6 +130,8 @@ pop rdx
 mov rax, rdx
 ;prologo
 
+pop rcx
+pop r12
 pop rbp
 ret
     
