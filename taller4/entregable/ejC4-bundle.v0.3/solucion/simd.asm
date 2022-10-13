@@ -22,8 +22,9 @@ fir_filter_simd:
 ;epilogo
 push rbp;alienada
 mov rbp, rsp
-push r12
-push rcx
+push r12;desalineada
+push rcx ;alineada
+
 
 push rdi ;desalineada
 push rsi ;alineada
@@ -35,7 +36,7 @@ mov r8, rdi                     ; *filtro
 add r8, BUFFER_OFFSET           ; *filtro->buffer
 mov r9, rdi                     ; *filtro 
 add r9, LENGTH_OFFSET           ; *filtro->length
-mov r9, [r9]                    ; filtro->length
+mov r9d, [r9]                    ; filtro->length
 dec r9                          ; filtro->length - 1
 sal r9, 1                       ; 2*(filtro->length - 1) // offset length - 1
 add r8, r9                      ; *filtro->buffer[length - 1]
@@ -54,7 +55,7 @@ xor r10,r10
     ;rdi: estructura. rdx: longitud del audio. r8: puntero a coeficiente. r9: (in_p) posicion a leer del buffer
     pxor xmm0,xmm0                 ; acumulador
     mov r8, [rdi + COEFS_OFFSET]   ; coef
-    mov r9, [rdi+LENGTH_OFFSET]    ; long
+    mov r9d, [rdi+LENGTH_OFFSET]    ; long
     mov r11, r9 ; long
     add r9, r10 ; length + n
     sub r9, 8 ; length + n - 8 para cargar en el buffer 
@@ -69,7 +70,7 @@ xor r10,r10
     ;1. in_p = 0x7fffffe76bcc
     ;2. in_p = 0x7fffffe76bd0
 
-    ;r -s -f highpass -o outputs/asaddad_simd.wav wavs/muestra.wav
+    ;r -s -f impulse -o outputs/impulsetruchoSIMD_simd.wav wavs/muestra.wav
         .innerloop:
             ;acc += (int32_t)(*coeff_p++) * (int32_t)(*(in_p--))
             movdqu xmm1, [r9] ; cargo 16 bytes buffer en xmm1
@@ -99,6 +100,9 @@ xor r10,r10
     .fin:
     sar esi, 15
     mov word [rcx], si
+    ;en ASM
+    ;
+
     inc rcx
     inc rcx
     inc r10
@@ -115,24 +119,50 @@ xor r9,r9
 mov r9, rdx                    ; length
 sal r9, 1                      ; length offset
 add r9, r8                      ; *filtro->buffer[length]
-mov r10, [rdi + LENGTH_OFFSET]  ; filtro.length
+mov r10d, [rdi + LENGTH_OFFSET]  ; filtro.length
 dec r10                         ; filtro.length - 1
 sal r10,1                       ; (filtro.length - 1) * sizeof(int16_t)
 push rdx; desalineada
+sub rsp, 8; alineada
 
 mov rdi, r8                     ; *filtro->buffer
 mov rsi, r9                     ; *filtro->buffer[length]
 mov rdx, r10                    ; (filtro.length - 1) * sizeof(int16_t)
 
 call memmove WRT ..plt
-pop rdx
+add rsp, 8;desalineada
+pop rdx;alineada
 
 mov rax, rdx
 ;prologo
 
-pop rcx
-pop r12
-pop rbp
+pop rcx;desalineada
+;SIMD:
+;(gdb) p (int16_t)*($rcx)
+;$1 = -6
+;(gdb) p (int16_t)*($rcx+2)
+;$2 = -6
+;(gdb) p (int16_t)*($rcx+4)
+;$3 = 0
+;(gdb) p (int16_t)*($rcx+6)
+;$4 = -9
+
+;en C
+;(gdb) p (int16_t)(out[0])
+;$5 = -6
+;(gdb) p (int16_t)(out[1])
+;$6 = -6
+;(gdb) p (int16_t)(out[2])
+;$7 = 0
+;(gdb) p (int16_t)(out[3])
+;$8 = -9
+;(gdb) p (int16_t)(out[4])
+;$9 
+
+
+
+pop r12;alineada
+pop rbp;desalineada
 ret
     
     
