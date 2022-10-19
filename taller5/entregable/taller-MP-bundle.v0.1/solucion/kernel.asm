@@ -9,6 +9,8 @@ global start
 
 
 ; COMPLETAR - Agreguen declaraciones extern según vayan necesitando
+extern gdt;         // La gdt un arreglo de entradas
+extern GDT_DESC; // Descriptor de la gdt | gdtr??
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 ;%define CS_RING_0_SEL ??   
@@ -55,6 +57,8 @@ start:
     call A20_enable
 
     ; COMPLETAR - Cargar la GDT
+    lgdt [GDT_DESC] 
+    xchg bx,bx
 
     ; COMPLETAR - Setear el bit PE del registro CR0
 
