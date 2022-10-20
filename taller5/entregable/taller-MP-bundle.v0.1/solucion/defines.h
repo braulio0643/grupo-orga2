@@ -39,10 +39,10 @@
  * Definirlos a partir de los índices de la GDT, definidos más arriba
  * Hint: usar operadores "<<" y "|" (shift y or) */
 
-#define GDT_CODE_0_SEL 0x1 << 3 | 0x1 << 2 | 0x00
-#define GDT_DATA_0_SEL 0x3 << 3 | 0x1 << 2 | 0x00
-#define GDT_CODE_3_SEL 0x2 << 3 | 0x1 << 2 | 0x03
-#define GDT_DATA_3_SEL 0x4 << 3 | 0x1 << 2 | 0x03
+#define GDT_CODE_0_SEL 0x1 << 3 | 0x0 << 2 | 0x00
+#define GDT_CODE_3_SEL 0x2 << 3 | 0x0 << 2 | 0x03
+#define GDT_DATA_0_SEL 0x3 << 3 | 0x0 << 2 | 0x00
+#define GDT_DATA_3_SEL 0x4 << 3 | 0x0 << 2 | 0x03
 
 // Macros para trabajar con segmentos de la GDT.
 
