@@ -9,7 +9,7 @@ KERNEL_SRC=kernel.asm
 KERNEL_OBJ=kernel.o
 KERNEL_BIN=kernel.bin
 
-OBJ=$(KERNEL_OBJ) gdt.o screen.o 
+OBJ=$(KERNEL_OBJ) gdt.o screen.o idt.o isr.o pic.o keyboard_input.o
 
 # Dependencias, generado por el flag -MMD de gcc, util para recompilar cuando actualizamos headers.
 DEP=$(OBJ:%.o=%.d)
@@ -35,9 +35,9 @@ LDFLAGS=-static -m elf_i386 -b elf32-i386 -e start -Ttext 0x1200
 
 QUIET = @
 
-.PHONY=clean all image 
+.PHONY=clean all image
 
-all:  clean image 
+all:  clean image
 
 format:
 	clang-format -i *.h *.c
@@ -54,7 +54,7 @@ seed:
 
 -include $(DEP)
 
-kernel.bin: $(OBJ) 
+kernel.bin: $(OBJ)
 	@echo 'Linkeando kernel...'
 	$(LD) $(LDFLAGS) -o $@.elf $(OBJ)
 	@echo 'Extrayendo tabla de simbolos...'
@@ -74,7 +74,7 @@ image: kernel.bin $(DISK_IMG)
 	$(MCOPY) -o -i $(DISK_IMG) $(KERNEL_BIN) ::/
 	@echo ''
 
-$(DISK_IMG): 
+$(DISK_IMG):
 	@echo 'aca esta'
 	bzip2 -dk $(DISK_IMG_BZ)
 	@echo ''

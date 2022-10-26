@@ -11,6 +11,8 @@ global start
 ; COMPLETAR - Agreguen declaraciones extern según vayan necesitando
 extern GDT_DESC; // Descriptor de la gdt | gdtr??
 extern screen_draw_layout
+extern IDT_DESC
+extern idt_init
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 %define CS_RING_0_SEL 0x0001 << 3
@@ -52,6 +54,7 @@ start:
     ; sección de datos)
     print_text_rm start_rm_msg, start_rm_len, 0x0000ffff, 0, 0  
 
+    xchg bx, bx
     ; COMPLETAR - Habilitar A20
     ; (revisar las funciones definidas en a20.asm)
     call A20_enable
@@ -88,11 +91,18 @@ modo_protegido:
 
     ; COMPLETAR - Imprimir mensaje de bienvenida - MODO PROTEGIDO
     print_text_pm start_pm_msg, start_pm_len, 0x0000ffff, 0, 0  
-    xchg bx,bx
     ; COMPLETAR - Inicializar pantalla
         
+    xchg bx, bx
     call screen_draw_layout 
 
+    xchg bx, bx
+    ; Inicializar idt
+    call idt_init
+    lidt [IDT_DESC]
+
+    xchg bx, bx
+    
     ; Ciclar infinitamente 
     mov eax, 0xFFFF
     mov ebx, 0xFFFF

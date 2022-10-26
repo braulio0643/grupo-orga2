@@ -36,7 +36,7 @@ gdt_entry_t gdt[GDT_COUNT] = {
         },
     [GDT_IDX_CODE_0] =
         {
-            .limit_15_0 = 0x3100,
+            .limit_15_0 = 0x30ff,
             .base_15_0 = 0x0000,
             .base_23_16 = 0x00,
             .type = 0xA,
@@ -52,7 +52,7 @@ gdt_entry_t gdt[GDT_COUNT] = {
         },
     [GDT_IDX_CODE_3] =
         {
-            .limit_15_0 = 0x3100,
+            .limit_15_0 = 0x30ff,
             .base_15_0 = 0x0000,
             .base_23_16 = 0x00,
             .type = 0xA,
@@ -68,7 +68,7 @@ gdt_entry_t gdt[GDT_COUNT] = {
         },
     [GDT_IDX_DATA_0] =
         {
-            .limit_15_0 = 0x3100,
+            .limit_15_0 = 0x30ff,
             .base_15_0 = 0x0000,
             .base_23_16 = 0x00,
             .type = 0x2,
@@ -84,7 +84,7 @@ gdt_entry_t gdt[GDT_COUNT] = {
         },
     [GDT_IDX_DATA_3] =
         {
-            .limit_15_0 = 0x3100,
+            .limit_15_0 = 0x30ff,
             .base_15_0 = 0x0000,
             .base_23_16 = 0x00,
             .type = 0x2,
@@ -100,7 +100,7 @@ gdt_entry_t gdt[GDT_COUNT] = {
         },
     [GDT_IDX_VIDEO] =
         {
-            .limit_15_0 = 0x0002,
+            .limit_15_0 = 0x0001,
             .base_15_0 = 0x8000,
             .base_23_16 = 0x0b,
             .type = 0x2,
