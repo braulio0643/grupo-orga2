@@ -1,4 +1,4 @@
-; ** por compatibilidad se omiten tildes **
+; ** por compatibilidad se omiten tildes **isr.as
 ; ==============================================================================
 ; System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 ; ==============================================================================
@@ -7,6 +7,16 @@
 
 %include "print.mac"
 %define CS_RING_0_SEL    (1 << 3)
+
+; PushAD Order
+%define offset_EAX 28
+%define offset_ECX 24
+%define offset_EDX 20
+%define offset_EBX 16
+%define offset_ESP 12
+%define offset_EBP 8
+%define offset_ESI 4
+%define offset_EDI 0
 
 BITS 32
 
@@ -122,6 +132,10 @@ ISRNE 20
 global _isr32
 ; COMPLETAR: Implementar la rutina
 _isr32:
+    pushad
+    call next_clock
+    popad
+    call pic_finish1
     iret
 
 ;; Rutina de atención del TECLADO
@@ -129,6 +143,14 @@ _isr32:
 global _isr33
 ; COMPLETAR: Implementar la rutina
 _isr33:
+    pushad
+    xor eax, eax
+    in al, 0x60 
+    push eax
+    call process_scancode
+    add esp, 4
+    popad
+    call pic_finish1
     iret
 
 
@@ -138,22 +160,18 @@ _isr33:
 global _isr88
 ; COMPLETAR: Implementar la rutina
 _isr88:
+    mov eax, 0x58
     iret
 
 global _isr98
 ; COMPLETAR: Implementar la rutina
 _isr98:
+; cambiar valor desde la pila
+    pushad
+    mov dword [esp + offset_EAX], 0x0062
+    popad
     iret
 
-; PushAD Order
-%define offset_EAX 28
-%define offset_ECX 24
-%define offset_EDX 20
-%define offset_EBX 16
-%define offset_ESP 12
-%define offset_EBP 8
-%define offset_ESI 4
-%define offset_EDI 0
 
 
 ;; Funciones Auxiliares
@@ -171,5 +189,5 @@ next_clock:
         .ok:
                 add ebx, isrClock
                 print_text_pm ebx, 1, 0x0f, 49, 79
-                popad
+        popad
         ret

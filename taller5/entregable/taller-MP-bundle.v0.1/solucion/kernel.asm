@@ -13,6 +13,8 @@ extern GDT_DESC; // Descriptor de la gdt | gdtr??
 extern screen_draw_layout
 extern IDT_DESC
 extern idt_init
+extern pic_reset
+extern pic_enable
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 %define CS_RING_0_SEL 0x0001 << 3
@@ -100,6 +102,13 @@ modo_protegido:
     ; Inicializar idt
     call idt_init
     lidt [IDT_DESC]
+
+    call pic_reset
+    call pic_enable
+    sti
+
+    int 88
+
 
     xchg bx, bx
     
