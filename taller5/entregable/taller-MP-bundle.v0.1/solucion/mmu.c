@@ -7,9 +7,12 @@
 */
 
 #include "mmu.h"
+#include "defines.h"
 #include "i386.h"
 
 #include "kassert.h"
+#include "types.h"
+#include <stdint.h>
 
 static pd_entry_t* kpd = (pd_entry_t*)KERNEL_PAGE_DIR;
 static pt_entry_t* kpt = (pt_entry_t*)KERNEL_PAGE_TABLE_0;
@@ -53,6 +56,9 @@ void mmu_init(void) {}
  * @return devuelve la dirección de memoria de comienzo de la próxima página libre de kernel
  */
 paddr_t mmu_next_free_kernel_page(void) {
+  paddr_t res = next_free_kernel_page;
+  next_free_kernel_page += PAGE_SIZE;
+  return res;
 }
 
 /**
@@ -60,6 +66,9 @@ paddr_t mmu_next_free_kernel_page(void) {
  * @return devuelve la dirección de memoria de comienzo de la próxima página libre de usuarix
  */
 paddr_t mmu_next_free_user_page(void) {
+  paddr_t res = next_free_user_page;
+  next_free_user_page += PAGE_SIZE;
+  return res;
 }
 
 /**
@@ -69,6 +78,18 @@ paddr_t mmu_next_free_user_page(void) {
  * de páginas usado por el kernel
  */
 paddr_t mmu_init_kernel_dir(void) {
+  //crear directorio
+  //crear tablas
+  kpd[0].pt=(KERNEL_PAGE_TABLE_0)>>12;
+  kpd[0].attrs = 0;
+  int cantPaginasKernel = identity_mapping_end >> 12;
+  int currentPage = 0x000000;
+  for(int i = 0; i < cantPaginasKernel; i++){
+    kpt[i].attrs = 0 ;//poner atributos de kernel
+    kpt[i].page = currentPage;
+    currentPage++;
+  }
+  return KERNEL_PAGE_DIR;
 }
 
 /**
