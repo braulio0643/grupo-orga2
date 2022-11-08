@@ -169,7 +169,17 @@ void copy_page(paddr_t dst_addr, paddr_t src_addr) {
  * mmu_init_task_dir inicializa las estructuras de paginación vinculadas a una tarea cuyo código se encuentra en la dirección phy_start
  * @pararm phy_start es la dirección donde comienzan las dos páginas de código de la tarea asociada a esta llamada
  * @return el contenido que se ha de cargar en un registro CR3 para la tarea asociada a esta llamada
-paddr_t mmu_init_task_dir(paddr_t phy_start) {
-  return 0;
-}
  */
+paddr_t mmu_init_task_dir(paddr_t phy_start) {
+  pd_entry_t * dir = (pd_entry_t *) mmu_next_free_kernel_page();
+  uint32_t attrs = MMU_P + MMU_U;
+  dir[0] = (pd_entry_t){
+    .pt=(KERNEL_PAGE_TABLE_0)>>12,
+    .attrs=0x13
+  };
+  mmu_map_page((uint32_t)dir, TASK_CODE_VIRTUAL, phy_start, attrs);
+  mmu_map_page((uint32_t)dir, TASK_CODE_VIRTUAL + PAGE_SIZE, phy_start +  PAGE_SIZE,  attrs);
+  mmu_map_page((uint32_t)dir, TASK_STACK_BASE, mmu_next_free_user_page(), attrs);
+  mmu_map_page((uint32_t)dir, TASK_SHARED_PAGE, mmu_next_free_user_page(), attrs);
+  return (paddr_t) dir;
+}

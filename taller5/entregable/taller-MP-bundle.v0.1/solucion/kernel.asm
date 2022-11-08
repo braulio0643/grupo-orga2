@@ -18,6 +18,7 @@ extern pic_enable
 
 extern mmu_init_kernel_dir
 extern copy_page
+extern mmu_init_task_dir
 
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
@@ -38,6 +39,8 @@ start_rm_len equ    $ - start_rm_msg
 start_pm_msg db     'Iniciando kernel en Modo Protegido'
 start_pm_len equ    $ - start_pm_msg
 
+task_pm_msg db     'Esto se esta imprimiendo desde una tarea'
+task_pm_len equ    $ - task_pm_msg
 ;;
 ;; Seccion de código.
 ;; -------------------------------------------------------------------------- ;;
@@ -132,6 +135,22 @@ modo_protegido:
     push 0x300000 
     call copy_page
     
+    xchg bx, bx
+    
+    mov eax, cr3
+    push eax
+    push 0x18000
+    call mmu_init_task_dir
+    mov cr3, eax
+
+    print_text_pm task_pm_msg, task_pm_len, 0x00000002, 0, 0    
+
+    xchg bx, bx
+    
+    add esp, 4
+    pop eax
+    mov cr3, eax
+
     xchg bx, bx
     
     ; Ciclar infinitamente 
