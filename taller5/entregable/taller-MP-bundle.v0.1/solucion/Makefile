@@ -17,7 +17,7 @@ DISK_IMG=diskette.img
 DISK_IMG_BZ=diskette.img.bz2
 
 CFLAGS=-Wall -Wextra -pedantic -std=c99 -Werror -Og -ggdb \
-  -m32 -ffreestanding -fno-pie -fno-zero-initialized-in-bss -fno-stack-protector
+  -m32 -ffreestanding -fno-pie -fno-zero-initialized-in-bss -fno-stack-protector -mno-sse
 
 
 CODESIZE=$$((0x18000 - 0x1200))

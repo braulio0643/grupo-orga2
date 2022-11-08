@@ -16,6 +16,10 @@ extern idt_init
 extern pic_reset
 extern pic_enable
 
+extern mmu_init_kernel_dir
+extern copy_page
+
+
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 %define CS_RING_0_SEL 0x0001 << 3
 %define DS_RING_0_SEL 0x0003 << 3
@@ -56,7 +60,6 @@ start:
     ; sección de datos)
     print_text_rm start_rm_msg, start_rm_len, 0x0000ffff, 0, 0  
 
-    xchg bx, bx
     ; COMPLETAR - Habilitar A20
     ; (revisar las funciones definidas en a20.asm)
     call A20_enable
@@ -95,21 +98,40 @@ modo_protegido:
     print_text_pm start_pm_msg, start_pm_len, 0x0000ffff, 0, 0  
     ; COMPLETAR - Inicializar pantalla
         
-    xchg bx, bx
     call screen_draw_layout 
 
-    xchg bx, bx
     ; Inicializar idt
     call idt_init
     lidt [IDT_DESC]
 
     call pic_reset
     call pic_enable
+
+
+    call mmu_init_kernel_dir 
+
+    and eax, 0xFFFFF000
+    add eax, 0x10
+    mov cr3, eax
+    
+    mov dword [0x10000010], 0xF00F
+
+    mov eax, cr0
+    or eax, 0x80000000
+    mov cr0, eax
+
+    xchg bx, bx
+
     sti
 
     int 88
 
+    mov byte [0x200000], 0x0d ;src
 
+    push 0x200000 
+    push 0x300000 
+    call copy_page
+    
     xchg bx, bx
     
     ; Ciclar infinitamente 
