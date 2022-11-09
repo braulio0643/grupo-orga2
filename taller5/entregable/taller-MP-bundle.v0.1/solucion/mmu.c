@@ -179,7 +179,7 @@ paddr_t mmu_init_task_dir(paddr_t phy_start) {
   };
   mmu_map_page((uint32_t)dir, TASK_CODE_VIRTUAL, phy_start, attrs);
   mmu_map_page((uint32_t)dir, TASK_CODE_VIRTUAL + PAGE_SIZE, phy_start +  PAGE_SIZE,  attrs);
-  mmu_map_page((uint32_t)dir, TASK_STACK_BASE, mmu_next_free_user_page(), attrs);
-  mmu_map_page((uint32_t)dir, TASK_SHARED_PAGE, mmu_next_free_user_page(), attrs);
+  mmu_map_page((uint32_t)dir, TASK_STACK_BASE - PAGE_SIZE, mmu_next_free_user_page(), attrs + MMU_W);
+  mmu_map_page((uint32_t)dir, TASK_SHARED_PAGE, SHARED , attrs);
   return (paddr_t) dir;
 }
