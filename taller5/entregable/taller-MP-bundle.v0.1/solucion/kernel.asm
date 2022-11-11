@@ -19,7 +19,8 @@ extern pic_enable
 extern mmu_init_kernel_dir
 extern copy_page
 extern mmu_init_task_dir
-
+extern tss_init
+extern tasks_screen_draw
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 %define CS_RING_0_SEL 0x0001 << 3
@@ -124,8 +125,15 @@ modo_protegido:
     mov cr0, eax
 
     xchg bx, bx
-
+    
+    
     sti
+
+    xchg bx, bx
+    call tss_init
+    call tasks_screen_draw
+    mov ax, (11 << 3) | 0b | 11b
+    ltr ax
 
     int 88
 
@@ -133,6 +141,8 @@ modo_protegido:
 
     push 0x200000 
     push 0x300000 
+    xchg bx, bx
+
     call copy_page
     
     xchg bx, bx
@@ -150,8 +160,11 @@ modo_protegido:
     add esp, 4
     pop eax
     mov cr3, eax
-
+    
     xchg bx, bx
+   
+    xchg bx, bx
+    
     
     ; Ciclar infinitamente 
     mov eax, 0xFFFF
