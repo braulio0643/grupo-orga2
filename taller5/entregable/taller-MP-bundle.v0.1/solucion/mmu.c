@@ -172,6 +172,7 @@ void copy_page(paddr_t dst_addr, paddr_t src_addr) {
  */
 paddr_t mmu_init_task_dir(paddr_t phy_start) {
   pd_entry_t * dir = (pd_entry_t *) mmu_next_free_kernel_page();
+  zero_page((paddr_t)dir);
   uint32_t attrs = MMU_P + MMU_U;
   dir[0] = (pd_entry_t){
     .pt=(KERNEL_PAGE_TABLE_0)>>12,

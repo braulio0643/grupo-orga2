@@ -19,8 +19,15 @@ extern pic_enable
 extern mmu_init_kernel_dir
 extern copy_page
 extern mmu_init_task_dir
+
 extern tss_init
 extern tasks_screen_draw
+%define GDT_IDX_TASK_INITIAL         11 << 3
+%define GDT_IDX_TASK_IDLE            12 << 3
+%define TASK_IDLE_CODE_START   0x0001C000
+
+extern sched_init
+extern tasks_init
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 %define CS_RING_0_SEL 0x0001 << 3
@@ -121,29 +128,20 @@ modo_protegido:
     or eax, 0x80000000
     mov cr0, eax
 
-    xchg bx, bx
     call tss_init
-    xchg bx, bx
 
-    sti
-
-    call tasks_screen_draw
-    mov ax, (11 << 3) | 0b | 11b
+    mov ax, GDT_IDX_TASK_INITIAL
     ltr ax
 
-    mov eax, cr3
-    push eax
-    push 0x18000
-    call mmu_init_task_dir
-    mov cr3, eax
+    call sched_init
+    call tasks_init
+     
+    sti
+    jmp GDT_IDX_TASK_IDLE:0
 
-    print_text_pm task_pm_msg, task_pm_len, 0x00000002, 0, 0    
-    
-    add esp, 4
-    pop eax
-    mov cr3, eax
-    
-    
+
+    xchg bx, bx
+
     ; Ciclar infinitamente 
     mov eax, 0xFFFF
     mov ebx, 0xFFFF

@@ -74,7 +74,7 @@ tss_t tss_create_user_task(paddr_t code_start) {
   vaddr_t stack0 = mmu_next_free_kernel_page();
   //COMPLETAR: a donde deberia apuntar la pila de nivel cero?
   //no estoy seguro pero la cp de tareas dice "esp0: puntero al tope de pila de nivel 0"
-  vaddr_t esp0 = stack0 - PAGE_SIZE;
+  vaddr_t esp0 = stack0 + PAGE_SIZE;
 
   return (tss_t) {
     .cr3 = cr3,
@@ -98,7 +98,6 @@ tss_t tss_create_user_task(paddr_t code_start) {
  */
 void tss_init(void) {
   // COMPLETAR
-  gdt_entry_t a = tss_gdt_entry_for_task(&(tss_idle));
-  gdt[GDT_IDX_TASK_IDLE] = a;
+  gdt[GDT_IDX_TASK_IDLE] = tss_gdt_entry_for_task(&(tss_idle));
   gdt[GDT_IDX_TASK_INITIAL] = tss_gdt_entry_for_task(&(tss_initial));
 }
