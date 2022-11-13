@@ -117,36 +117,20 @@ modo_protegido:
     and eax, 0xFFFFF000
     add eax, 0x10
     mov cr3, eax
-    
-    mov dword [0x10000010], 0xF00F
-
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
 
     xchg bx, bx
-    
-    
+    call tss_init
+    xchg bx, bx
+
     sti
 
-    xchg bx, bx
-    call tss_init
     call tasks_screen_draw
     mov ax, (11 << 3) | 0b | 11b
     ltr ax
 
-    int 88
-
-    mov byte [0x200000], 0x0d ;src
-
-    push 0x200000 
-    push 0x300000 
-    xchg bx, bx
-
-    call copy_page
-    
-    xchg bx, bx
-    
     mov eax, cr3
     push eax
     push 0x18000
@@ -154,16 +138,10 @@ modo_protegido:
     mov cr3, eax
 
     print_text_pm task_pm_msg, task_pm_len, 0x00000002, 0, 0    
-
-    xchg bx, bx
     
     add esp, 4
     pop eax
     mov cr3, eax
-    
-    xchg bx, bx
-   
-    xchg bx, bx
     
     
     ; Ciclar infinitamente 
