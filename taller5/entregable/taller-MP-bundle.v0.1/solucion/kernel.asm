@@ -139,7 +139,6 @@ modo_protegido:
     jmp TASK_IDLE_SEL:0
 
 
-    xchg bx, bx
 
     ; Ciclar infinitamente 
     mov eax, 0xFFFF

@@ -82,7 +82,6 @@ extern tasks_input_process
     add esp, 10*4
     popad
 
-    xchg bx, bx
     jmp $
 
 
@@ -91,7 +90,6 @@ extern tasks_input_process
     add esp, 10*4
     popad
 
-    xchg bx, bx
     jmp $
 
 %endmacro
@@ -156,8 +154,6 @@ _isr32:
     str bx
     cmp ax, bx
     je .fin
-
-    xchg bx,bx
 
     mov word [sched_task_selector], ax
     jmp far [sched_task_offset]

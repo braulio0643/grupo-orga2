@@ -112,7 +112,7 @@ void mmu_map_page(uint32_t cr3, vaddr_t virt, paddr_t phy, uint32_t attrs) {
   if(page_dir[pd_index].pt == 0){
     page_table = (pt_entry_t*) mmu_next_free_kernel_page();
     page_dir[pd_index].pt = (uint32_t) page_table >> 12;
-    page_dir[pd_index].attrs = 0x13;
+    page_dir[pd_index].attrs = MMU_P + MMU_U + MMU_W ;
   }
   else{
     page_table = (pt_entry_t *)(page_dir[pd_index].pt << 12) ;
