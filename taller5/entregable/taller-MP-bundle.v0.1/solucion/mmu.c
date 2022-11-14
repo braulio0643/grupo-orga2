@@ -84,12 +84,12 @@ paddr_t mmu_init_kernel_dir(void) {
   zero_page((paddr_t)kpt);
   kpd[0] = (pd_entry_t){
     .pt=(KERNEL_PAGE_TABLE_0)>>12,
-    .attrs=0x13
+    .attrs= MMU_W + MMU_P
   };
   int cantPaginasKernel = identity_mapping_end >> 12;
   int currentPage = 0x000000;
   for(int i = 0; i <= cantPaginasKernel; i++){
-    kpt[i].attrs = 0x113 ;//poner atributos de kernel
+    kpt[i].attrs = MMU_W + MMU_P ;//poner atributos de kernel
     kpt[i].page = currentPage;
     currentPage++;
   }
@@ -177,7 +177,7 @@ paddr_t mmu_init_task_dir(paddr_t phy_start) {
   uint32_t attrs = MMU_P + MMU_U;
   dir[0] = (pd_entry_t){
     .pt=(KERNEL_PAGE_TABLE_0)>>12,
-    .attrs=0x13
+    .attrs= MMU_W + MMU_P
   };
   mmu_map_page((uint32_t)dir, TASK_CODE_VIRTUAL, phy_start, attrs);
   mmu_map_page((uint32_t)dir, TASK_CODE_VIRTUAL + PAGE_SIZE, phy_start +  PAGE_SIZE,  attrs);
