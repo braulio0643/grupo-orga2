@@ -20,6 +20,13 @@ extern mmu_init_kernel_dir
 extern copy_page
 extern mmu_init_task_dir
 
+extern tss_init
+extern tasks_screen_draw
+%define TASK_INITIAL_SEL  11 << 3
+%define TASK_IDLE_SEL     12 << 3
+
+extern sched_init
+extern tasks_init
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 %define CS_RING_0_SEL 0x0001 << 3
@@ -116,43 +123,23 @@ modo_protegido:
     and eax, 0xFFFFF000
     add eax, 0x10
     mov cr3, eax
-    
-    mov dword [0x10000010], 0xF00F
-
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
 
-    xchg bx, bx
+    call tss_init
 
+    mov ax, TASK_INITIAL_SEL
+    ltr ax
+
+    call sched_init
+    call tasks_init
     sti
 
-    int 88
+    jmp TASK_IDLE_SEL:0
 
-    mov byte [0x200000], 0x0d ;src
 
-    push 0x200000 
-    push 0x300000 
-    call copy_page
-    
-    xchg bx, bx
-    
-    mov eax, cr3
-    push eax
-    push 0x18000
-    call mmu_init_task_dir
-    mov cr3, eax
 
-    print_text_pm task_pm_msg, task_pm_len, 0x00000002, 0, 0    
-
-    xchg bx, bx
-    
-    add esp, 4
-    pop eax
-    mov cr3, eax
-
-    xchg bx, bx
-    
     ; Ciclar infinitamente 
     mov eax, 0xFFFF
     mov ebx, 0xFFFF

@@ -82,7 +82,6 @@ extern tasks_input_process
     add esp, 10*4
     popad
 
-    xchg bx, bx
     jmp $
 
 
@@ -91,7 +90,6 @@ extern tasks_input_process
     add esp, 10*4
     popad
 
-    xchg bx, bx
     jmp $
 
 %endmacro

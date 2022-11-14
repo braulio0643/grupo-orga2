@@ -17,7 +17,7 @@ DISK_IMG=diskette.img
 DISK_IMG_BZ=diskette.img.bz2
 
 CFLAGS=-Wall -Wextra -pedantic -std=c99 -Werror -Og -ggdb \
-  -m32 -ffreestanding -fno-pie -fno-zero-initialized-in-bss -fno-stack-protector -Wno-unused-function
+  -m32 -ffreestanding -fno-pie -fno-zero-initialized-in-bss -fno-stack-protector -Wno-unused-function -mno-sse
 
 TASKSCFLAGS=$(CFLAGS) -DORGA2__TAREA__
 

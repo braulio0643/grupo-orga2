@@ -7,6 +7,7 @@
 */
 
 #ifndef __DEFINES_H__
+
 #define __DEFINES_H__
 
 /* Misc */
@@ -36,14 +37,17 @@
 #define GDT_OFF_NULL_DESC (GDT_IDX_NULL_DESC << 3)
 #define GDT_OFF_VIDEO  (GDT_IDX_VIDEO << 3)
 
+#define GDT_OFF_CODE_3 (GDT_IDX_CODE_3 << 3)
+#define GDT_OFF_DATA_3 (GDT_IDX_DATA_3 << 3)
+
 /* Valores para los selectores de segmento de la GDT
  * Definirlos a partir de los índices de la GDT, definidos más arriba
  * Hint: usar operadores "<<" y "|" (shift y or) */
 #define GDT_CODE_0_SEL (GDT_IDX_CODE_0 << 3)
 #define GDT_DATA_0_SEL (GDT_IDX_DATA_0 << 3)
 /* | simboliza el OR en bits. Dado que es nivel 3 precisamos que los últimos 2 bits sea el privilegio 0x3*/
-#define GDT_CODE_3_SEL ((GDT_OFF_CODE_3) | 0x3)
-#define GDT_DATA_3_SEL ((GDT_OFF_DATA_3) | 0x3)
+#define GDT_CODE_3_SEL (GDT_OFF_CODE_3 + 0x3)
+#define GDT_DATA_3_SEL (GDT_OFF_DATA_3 + 0x3)
 
 // Macros para trabajar con segmentos de la GDT.
 
@@ -116,5 +120,39 @@ MMU_ENTRY_PADDR(X)  devuelve la dirección física de la base de un page frame o
 #define KERNEL_PAGE_DIR     (0x00025000)
 #define KERNEL_PAGE_TABLE_0 (0x00026000)
 #define KERNEL_STACK        (0x00025000)
+
+
+
+/* GDT */
+#define GDT_IDX_TASK_INITIAL         11
+#define GDT_IDX_TASK_IDLE            12
+
+#define GDT_TASK_A_SEL (GDT_IDX_TASK_A_START << 3)
+#define GDT_TASK_B_SEL (GDT_IDX_TASK_B_START << 3)
+
+/* Direcciones fisicas de codigos */
+/* -------------------------------------------------------------------------- */
+/* En estas direcciones estan los códigos de todas las tareas. De aqui se
+ * copiaran al destino indicado por TASK_<X>_CODE_START.
+ */
+#define USER_TASK_SIZE (PAGE_SIZE * 2)
+
+#define TASK_A_CODE_START (0x00018000)
+#define TASK_B_CODE_START (0x0001A000)
+#define TASK_IDLE_CODE_START   (0x0001C000)
+
+/* EFLAGS */
+
+#define EFLAGS_IF (1 << 9)
+
+/* Constantes Generales */
+
+#define MAX_TASKS     (2 * 2)
+#define GDT_TSS_START 13
+
+/* Interfaz gráfica del sistema */
+/* -------------------------------------------------------------------------- */
+#define TASK_VIEWPORT_WIDTH 38
+#define TASK_VIEWPORT_HEIGHT 23
 
 #endif //  __DEFINES_H__
