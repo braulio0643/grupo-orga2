@@ -157,6 +157,8 @@ _isr32:
     cmp ax, bx
     je .fin
 
+    xchg bx,bx
+
     mov word [sched_task_selector], ax
     jmp far [sched_task_offset]
 

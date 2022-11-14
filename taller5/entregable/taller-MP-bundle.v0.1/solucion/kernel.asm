@@ -22,9 +22,8 @@ extern mmu_init_task_dir
 
 extern tss_init
 extern tasks_screen_draw
-%define GDT_IDX_TASK_INITIAL         11 << 3
-%define GDT_IDX_TASK_IDLE            12 << 3
-%define TASK_IDLE_CODE_START   0x0001C000
+%define TASK_INITIAL_SEL  11 << 3
+%define TASK_IDLE_SEL     12 << 3
 
 extern sched_init
 extern tasks_init
@@ -130,14 +129,14 @@ modo_protegido:
 
     call tss_init
 
-    mov ax, GDT_IDX_TASK_INITIAL
+    mov ax, TASK_INITIAL_SEL
     ltr ax
 
     call sched_init
     call tasks_init
-     
     sti
-    jmp GDT_IDX_TASK_IDLE:0
+
+    jmp TASK_IDLE_SEL:0
 
 
     xchg bx, bx

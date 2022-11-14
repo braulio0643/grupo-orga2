@@ -119,6 +119,7 @@ void mmu_map_page(uint32_t cr3, vaddr_t virt, paddr_t phy, uint32_t attrs) {
   }
   page_table[pt_index].page =phy >> 12 ;
   page_table[pt_index].attrs = attrs;
+  tlbflush();
 }
 
 /**
